@@ -1,200 +1,146 @@
-# 🧠 Libras-TechMan
+# Libras-TechMan
 
-**Tradutor de LIBRAS em Tempo Real com Inteligência Artificial**
+**Sistema de Reconhecimento de Gestos em Tempo Real com Machine Learning**
 
-Um sistema avançado de tradução automática de LIBRAS (Linguagem Brasileira de Sinais) para texto e voz, utilizando visão computacional, machine learning e processamento de linguagem natural.
+Um sistema baseado em visão computacional para detecção e classificação de gestos das mãos, emoções e síntese de voz. Utiliza MediaPipe para detecção de landmarks, XGBoost para classificação e DeepFace para reconhecimento de emoções.
 
 ---
 
 ## 📋 Índice
 
 - [Visão Geral](#visão-geral)
-- [Características](#características)
-- [Arquitetura](#arquitetura)
+- [Status do Projeto](#status-do-projeto)
+- [Tecnologias](#tecnologias)
 - [Pré-requisitos](#pré-requisitos)
 - [Instalação](#instalação)
-- [Uso](#uso)
 - [Estrutura do Projeto](#estrutura-do-projeto)
+- [Uso](#uso)
 - [Componentes](#componentes)
-- [API REST](#api-rest)
+- [API WebSocket](#api-websocket)
 - [Interface Web](#interface-web)
 - [Configuração](#configuração)
-- [Troubleshooting](#troubleshooting)
-- [Contribuindo](#contribuindo)
-- [Licença](#licença)
+- [Limitações Conhecidas](#limitações-conhecidas)
+- [Próximos Passos](#próximos-passos)
 
 ---
 
 ## 🎯 Visão Geral
 
-Libras-TechMan é uma aplicação que utiliza tecnologias de ponta para:
+Libras-TechMan é uma aplicação que realiza:
 
-- **Detectar movimentos das mãos** em tempo real através de câmera
-- **Identificar letras e sinais** de LIBRAS usando modelos híbridos (C + Machine Learning)
-- **Reconhecer emoções** do usuário
-- **Construir frases** a partir de sinais individuais
-- **Converter para voz** via síntese de texto (TTS)
-- **Fornecer interface web** para visualização em tempo real
+- **Detecção de mãos** em tempo real via câmera (MediaPipe)
+- **Classificação de gestos** usando modelo XGBoost treinado
+- **Reconhecimento de emoções** do usuário (DeepFace)
+- **Síntese de voz** em português (pyttsx3)
+- **Streaming real-time** via WebSocket (FastAPI)
+- **Interface web** para visualização (Streamlit)
 
-### Casos de Uso
+### O que este projeto NÃO é:
 
-- ♿ Acessibilidade para pessoas surdas e mudas
-- 📚 Educação e treinamento em LIBRAS
-- 🎓 Ferramentas assistivas em instituições
-- 🔍 Pesquisa em visão computacional e reconhecimento de gestos
-- 💼 Interpretação automática de conteúdo em LIBRAS
-
----
-
-## ✨ Características
-
-### Detecção e Reconhecimento
-- ✅ Detecção de mão em tempo real com **MediaPipe**
-- ✅ Classificação híbrida (Engine C + TensorFlow/Keras)
-- ✅ Reconhecimento de **emoções** com DeepFace
-- ✅ Suporte a **múltiplos métodos** de classificação
-- ✅ Confiança de detecção com scores de precisão
-
-### Processamento de Linguagem
-- ✅ Construção dinâmica de palavras
-- ✅ Agrupamento inteligente de palavras em frases
-- ✅ Detecção automática de pausas
-- ✅ Tratamento de repetições
-
-### Interface e Integração
-- ✅ **UI Web em Tempo Real** com Streamlit
-- ✅ **API REST** com FastAPI
-- ✅ **WebSocket** para streaming de dados
-- ✅ **Síntese de Voz** offline (pyttsx3)
-- ✅ **HUD Visual** com informações em tempo real
+❌ Um tradutor completo de LIBRAS  
+❌ Um sistema de processamento de linguagem natural  
+❌ Um aplicativo com modelos pré-treinados inclusos  
+❌ Uma solução de produção pronta para uso imediato
 
 ---
 
-## 🏗️ Arquitetura
+## 📊 Status do Projeto
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Interface Web (Streamlit)            │
-│              Interface de Usuário em Tempo Real          │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│              API REST (FastAPI)                         │
-│         WebSocket para Streaming de Frame              │
-└──────────────────────┬──────────────────────────────────┘
-                       │
-┌──────────────────────▼──────────────────────────────────┐
-│                   CORE ENGINE                           │
-├──────────────────────────────────────────────────────────┤
-│                                                          │
-│  ┌────────────────┐      ┌─────────────────────┐       │
-│  │ Camera Input   │      │ Hand Detection      │       │
-│  │ (OpenCV)       │─────▶│ (MediaPipe)         │       │
-│  └────────────────┘      └──────────┬──────────┘       │
-│                                      │                  │
-│  ┌────────────────┐      ┌──────────▼──────────┐       │
-│  │ Emotion        │      │ Hybrid Classifier  │       │
-│  │ Detection      │      │ (C + ML)           │       │
-│  │ (DeepFace)     │      └──────────┬──────────┘       │
-│  └────────────────┘                 │                  │
-│                          ┌──────────▼──────────┐       │
-│                          │ Word Builder        │       │
-│                          │ (Phrase Engine)     │       │
-│                          └──────────┬──────────┘       │
-│                                     │                  │
-│                          ┌──────────▼──────────┐       │
-│                          │ Text-to-Speech     │       │
-│                          │ (pyttsx3)          │       │
-│                          └────────────────────┘       │
-│                                                          │
-└──────────────────────────────────────────────────────────┘
-```
+**Estágio:** Prototipagem/MVP
+
+| Componente | Status | Observação |
+|-----------|--------|-----------|
+| Detecção de mão | ✅ Funcional | MediaPipe 0.10 |
+| Classificação ML | ⚠️ Requer treino | XGBoost (modelo não incluso) |
+| Detecção de emoção | ✅ Funcional | DeepFace |
+| API WebSocket | ✅ Funcional | FastAPI + Uvicorn |
+| Interface Web | ✅ Funcional | Streamlit |
+| Síntese de voz | ✅ Funcional | pyttsx3 (offline) |
+| Engine C nativo | ⚠️ Base apenas | Não está integrado completamente |
+
+---
+
+## 🛠️ Tecnologias
+
+### Backend
+- **Python 3.8+** - Linguagem principal
+- **FastAPI** - Framework REST + WebSocket
+- **MediaPipe** 0.10 - Detecção de landmarks das mãos
+- **XGBoost** - Classificação de gestos
+- **DeepFace** - Reconhecimento de emoções
+- **OpenCV** 4.10 - Processamento de vídeo
+- **scikit-learn** - Pré-processamento e avaliação
+
+### Frontend
+- **Streamlit** - Interface web interativa
+- **WebSocket** - Comunicação real-time
+
+### Áudio
+- **pyttsx3** - Síntese de fala offline em português
+
+### Engine Nativo
+- **C** - Base para processamento geométrico (não ativo)
 
 ---
 
 ## 📦 Pré-requisitos
 
-### Software
-- **Python 3.8+**
-- **Git**
-- **Webcam/Câmera** funcional
-- **Windows 10+** ou **Linux**
+- Python 3.8 ou superior
+- Webcam/câmera
+- ~2GB de espaço em disco (para modelos)
+- Sistema operacional: Windows, macOS ou Linux
 
-### Dependências de Sistema
-```bash
-# Windows
-# Instale Visual Studio Build Tools (para compilar extensões C)
-
-# Linux (Ubuntu/Debian)
-sudo apt-get install build-essential python3-dev
-sudo apt-get install libopencv-dev python3-opencv
+### Dependências
+```
+opencv-python==4.10.1
+mediapipe==0.10.14
+tensorflow==2.16.2
+keras==3.6.0
+scikit-learn==1.5.2
+xgboost==2.1.1
+fastapi==0.115.6
+uvicorn==0.32.1
+streamlit==1.41.1
+pyttsx3==2.90
+joblib==1.4.2
+deepface==0.0.92
+pandas==2.2.3
+numpy==1.26.4
 ```
 
 ---
 
-## 🚀 Instalação
+## 💻 Instalação
 
-### 1. Clonar o Repositório
+### 1. Clonar o repositório
 ```bash
 git clone https://github.com/seu-usuario/libras-techman.git
 cd libras-techman
 ```
 
-### 2. Criar Ambiente Virtual
+### 2. Criar ambiente virtual
 ```bash
-# Windows
 python -m venv venv
+
+# Windows
 venv\Scripts\activate
 
-# Linux/Mac
-python3 -m venv venv
+# macOS/Linux
 source venv/bin/activate
 ```
 
-### 3. Instalar Dependências
+### 3. Instalar dependências
 ```bash
-pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 4. Configurar Arquivo de Extensão C (Opcional)
-Se possuir o arquivo `classificador.dll` (Windows) ou `classificador.so` (Linux), coloque na pasta `engine/`:
+### 4. Treinar o modelo (OBRIGATÓRIO)
 ```bash
-cp seu_classificador.dll engine/classificador.dll  # Windows
-cp seu_classificador.so engine/classificador.so    # Linux
+cd venv/bin/activate  # se não estiver ativado
+python ia/treinamento.py
 ```
 
----
-
-## 💻 Uso
-
-### Modo 1: Aplicação Desktop (Tempo Real)
-```bash
-python main.py
-```
-
-**Controles:**
-- `Q` ou `ESC` para sair
-- A detecção ocorre automaticamente
-- Voz sintetizada reproduz as palavras detectadas
-
-### Modo 2: Interface Web (Streamlit)
-```bash
-streamlit run ui/app.py
-```
-
-Acesse: `http://localhost:8501`
-
-### Modo 3: API REST
-```bash
-python api/server.py
-```
-
-A API estará disponível em: `http://localhost:8000`
-
-**Documentação interativa:**
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+**Nota:** O modelo não é fornecido. Você precisa treinar com seu próprio dataset ou coletar dados primeiro.
 
 ---
 
@@ -202,376 +148,212 @@ A API estará disponível em: `http://localhost:8000`
 
 ```
 libras-techman/
-├── 📄 readme.md                    # Este arquivo
-├── 📄 main.py                      # Ponto de entrada principal
-├── 📄 requirements.txt             # Dependências Python
-│
-├── 📁 api/                         # API REST e WebSocket
-│   ├── server.py                   # Servidor FastAPI
-│   └── realtime.py                 # Endpoints WebSocket
-│
-├── 📁 config/                      # Configurações
-│   ├── __init__.py
-│   └── settings.py                 # Constantes e parametrização
-│
-├── 📁 core/                        # Núcleo do Sistema
-│   ├── camera.py                   # Captura de vídeo (OpenCV)
-│   ├── detector_mao.py             # Detecção de mão (MediaPipe)
-│   ├── detector_emocao.py          # Reconhecimento de emoção (DeepFace)
-│   ├── classificador.py            # Classificador em C
-│   ├── classificador_hibrido.py    # Orquestração C + ML
-│   ├── desenhador.py               # HUD e renderização visual
-│   ├── palavras.py                 # Construtor de palavras
-│   ├── frases.py                   # Construtor de frases
-│   ├── utils.py                    # Utilitários gerais
-│   └── __init__.py
-│
-├── 📁 engine/                      # Motor em C
-│   ├── classificador.c             # Código-fonte C
-│   ├── classificador.h             # Headers C
-│   └── classificador.dll/.so       # Binário compilado
-│
-├── 📁 ia/                          # Machine Learning
-│   ├── coletor_dataset.py          # Coleta de dados de treinamento
-│   ├── inferencia.py               # Inferência TensorFlow
-│   ├── treinamento.py              # Script de treinamento
-│   ├── modelos/                    # Modelos treinados
-│   └── __init__.py
-│
-├── 📁 data/                        # Dados e Recursos
-│   ├── datasets/                   # Datasets de LIBRAS
-│   ├── imagens/                    # Imagens de referência
-│   └── videos/                     # Vídeos de teste
-│
-├── 📁 ui/                          # Interface Web
-│   └── app.py                      # Aplicação Streamlit
-│
-├── 📁 voz/                         # Síntese de Voz
-│   ├── sintetizador.py             # Engine TTS
-│   └── __init__.py
-│
-├── 📁 tests/                       # Testes Automatizados
-│   └── [test files]
-│
-└── 📁 logs/                        # Arquivos de Log
-    └── [log files]
+├── core/                          # Módulos centrais de IA/CV
+│   ├── camera.py                  # Gerenciador de câmera
+│   ├── detector_mao.py           # Detecção de landmarks (MediaPipe)
+│   ├── classificador_hibrido.py  # Orquestrador de classificação
+│   ├── detector_emocao.py        # Reconhecimento de emoções (DeepFace)
+│   ├── desenhador.py             # Renderização de HUD
+│   ├── palavras.py               # Agregador de letras em palavras
+│   ├── frases.py                 # Agregador de palavras em frases
+│   └── utils.py                  # Utilitários gerais
+├── ia/                            # Módulos de Machine Learning
+│   ├── inferencia.py             # Inferência do modelo XGBoost
+│   ├── treinamento.py            # Script de treinamento
+│   ├── coletor_dataset.py        # Coleta de dados para treino
+│   └── modelos/                  # (vazio) Armazena modelos treinados
+├── api/                           # API FastAPI
+│   ├── server.py                 # Endpoints REST
+│   └── realtime.py               # Endpoint WebSocket
+├── ui/                            # Interface Web
+│   └── app.py                    # Streamlit app
+├── voz/                           # Módulos de áudio
+│   └── sintetizador.py           # Text-to-speech com pyttsx3
+├── engine/                        # Engine nativo (base)
+│   ├── classificador.c           # Processamento geométrico em C
+│   └── classificador.h           # Header C
+├── config/                        # Configurações
+│   └── settings.py               # Constantes do projeto
+├── data/                          # Dados
+│   ├── datasets/                 # (vazio) Dataset CSV
+│   ├── imagens/                  # (vazio) Imagens de treino
+│   └── videos/                   # (vazio) Vídeos de teste
+├── main.py                        # Aplicação principal (desktop)
+├── requirements.txt               # Dependências do projeto
+└── readme.md                      # Este arquivo
 ```
+
+---
+
+## 🚀 Uso
+
+### Opção 1: Aplicação Desktop (OpenCV)
+```bash
+python main.py
+```
+Abre janela com detecção em tempo real. Pressione `Q` para sair.
+
+### Opção 2: API WebSocket (Recomendado para desenvolvimento)
+```bash
+uvicorn api.realtime:app --reload
+```
+Acessa em `ws://localhost:8000/ws` para stream de dados.
+
+### Opção 3: Interface Web (Streamlit)
+Em outro terminal:
+```bash
+streamlit run ui/app.py
+```
+Acessa em `http://localhost:8501`
+
+### Opção 4: Coletar dados para treino
+```bash
+python ia/coletor_dataset.py
+```
+Captura landmarks de mãos e salva em CSV para treino posterior.
 
 ---
 
 ## 🔧 Componentes
 
-### 1. **Camera** (`core/camera.py`)
-Gerencia captura de vídeo em tempo real
-- Inicialização com OpenCV
-- Captura de frames
-- Tratamento de erros de câmera
+### DetectorMao (core/detector_mao.py)
+- Usa MediaPipe para detectar 21 landmarks da mão
+- Retorna: `HandResult(encontrou_mao, landmarks, confianca)`
+- Trabalha em tempo real (~30 FPS)
 
-### 2. **DetectorMao** (`core/detector_mao.py`)
-Detecção de mão usando MediaPipe
-- 21 landmarks por mão
-- Confiança de detecção
-- Identificação de lado (esquerda/direita)
-- Desenho de skeleton
+### ClassificadorHibrido (core/classificador_hibrido.py)
+- Orquestra classificação via XGBoost
+- Fallback para gestos não classificados
+- Retorna: letra, confiança, método usado
 
-### 3. **DetectorEmocao** (`core/detector_emocao.py`)
-Análise de emoção com DeepFace
-- 7 emoções: Happy, Sad, Angry, Surprised, Fear, Neutral, Disgusted
-- Score de confiança
-- Cache para otimização
+### DetectorEmocao (core/detector_emocao.py)
+- Usa DeepFace para 7 emoções: angry, disgust, fear, happy, neutral, sad, surprise
+- Frame skipping configurável (padrão: cada 10 frames)
+- Retorna: emotion, confidence
 
-### 4. **ClassificadorHibrido** (`core/classificador_hibrido.py`)
-Orquestrador de classificação
-- **Engine C**: Análise geométrica rápida
-- **Engine ML**: TensorFlow para reconhecimento preciso
-- Seleção automática do melhor resultado
-- Score de confiança unificado
+### SintetizadorVoz (voz/sintetizador.py)
+- pyttsx3 offline em português
+- Métodos: falar(), falar_letra(), falar_palavra(), falar_emocao()
 
-### 5. **ConstrutorPalavras** (`core/palavras.py`)
-Agregação de letras em palavras
-- Detecção de pausa entre sinais
-- Evita repetição de letras consecutivas
-- Timeout configurável
+### ConstrutorPalavras (core/palavras.py)
+- Agrega letras em palavras
+- Detecta pausa de 1.2s entre letras
+- Limpa automaticamente palavra finalizada
 
-### 6. **ConstrutorFrases** (`core/frases.py`)
-Agrupamento de palavras em frases
-- Detecção de pausa longa entre palavras
-- Processamento de linguagem natural
-- Organização do fluxo de texto
-
-### 7. **SintetizadorVoz** (`voz/sintetizador.py`)
-Síntese de fala em português
-- pyttsx3 para processamento offline
-- Velocidade e volume configuráveis
-- Reprodução de letras e palavras
-
-### 8. **HUD** (`core/desenhador.py`)
-Interface visual em tempo real
-- Skeleton da mão
-- Letra detectada
-- Confiança
-- Palavra atual
-- Emoção detectada
+### ConstrutorFrases (core/frases.py)
+- Agrega palavras em frases
+- Detecta pausa de 3.0s entre palavras
+- Reconhece fim de frase
 
 ---
 
-## 🌐 API REST
+## 📡 API WebSocket
 
-### Endpoints Principais
-
-#### Health Check
-```bash
-GET /health
+### Conectar
+```javascript
+const ws = new WebSocket('ws://localhost:8000/ws');
 ```
 
-**Resposta:**
+### Formato de dados recebidos
 ```json
 {
-  "status": "ok"
-}
-```
-
-#### WebSocket - Stream em Tempo Real
-```bash
-WS ws://localhost:8000/ws
-```
-
-**Dados recebidos:**
-```json
-{
-  "frame": "base64_encoded_image",
   "letra": "A",
-  "confianca_letra": 0.95,
-  "palavra": "PALAVRA",
-  "frase": "LIBRAS TECHMAN",
+  "confianca": 0.95,
+  "metodo": "ML",
   "emocao": {
     "emotion": "happy",
-    "confidence": 0.87
-  }
+    "confidence": 0.82
+  },
+  "frame": "base64_encoded_jpeg"
 }
 ```
 
+### Parâmetros
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| letra | string | Gesto classificado (A-Z, -) |
+| confianca | float | Confiança da classificação (0-1) |
+| metodo | string | ML, NO_HAND, FALLBACK |
+| emocao | object | Resultado de detecção emocional |
+| frame | string | Frame JPEG codificado em base64 |
+
 ---
 
-## 🎨 Interface Web
+## 🖥️ Interface Web (Streamlit)
 
-### Streamlit App (`ui/app.py`)
+Após executar `streamlit run ui/app.py`:
 
-A interface web oferece:
-- 📹 Visualização de vídeo em tempo real
-- 📊 Cards de detecção (letra, confiança)
-- 😊 Indicador de emoção
-- 📝 Histórico de palavras e frases
-- ⚙️ Controles de configuração
-
-**Acesso:**
-```bash
-streamlit run ui/app.py
-```
+- **Vídeo em tempo real** - Stream do WebSocket
+- **Letra detectada** - Display e barra de confiança
+- **Estado emocional** - Emoção e confiança
+- **Resumo** - Panel com informações consolidadas
 
 ---
 
 ## ⚙️ Configuração
 
-### Arquivo `config/settings.py`
+Editar `config/settings.py`:
 
 ```python
-CAMERA_INDEX = 0                 # Índice da câmera
-WINDOW_NAME = "Libras-TechMan"   # Nome da janela
-MIN_HAND_DETECTION = 0.7         # Confiança mínima de detecção
-MAX_HANDS = 1                    # Máximo de mãos detectadas
-EMOTION_REFRESH = 10             # Frames para atualizar emoção
-DLL_WINDOWS = "./engine/classificador.dll"
-DLL_LINUX = "./engine/classificador.so"
-FONT_SCALE = 0.7                 # Escala da fonte no HUD
-FONT_THICKNESS = 2               # Espessura da fonte
-```
-
-### Variáveis de Ambiente
-
-```bash
-# Opcional: definir câmera específica
-export CAMERA_INDEX=0
-
-# Opcional: modo debug
-export DEBUG=1
-
-# Opcional: porta da API
-export API_PORT=8000
+CAMERA_INDEX = 0                    # Índice da câmera
+MIN_HAND_DETECTION = 0.7           # Confiança mínima detecção
+MAX_HANDS = 1                      # Máximo de mãos
+EMOTION_REFRESH = 10               # Frame skip detecção emoção
 ```
 
 ---
 
-## 🐛 Troubleshooting
+## ⚠️ Limitações Conhecidas
 
-### Problema: Câmera não é detectada
-**Solução:**
-```bash
-# Verificar câmeras disponíveis
-python -c "import cv2; print(cv2.VideoCapture(0).isOpened())"
-
-# Tentar índices diferentes em config/settings.py
-CAMERA_INDEX = 1  # ou 2, 3...
-```
-
-### Problema: "Modelo não encontrado. ML desativado."
-**Solução:**
-- Coloque o arquivo `classificador.dll` ou `.so` em `engine/`
-- Ou treine um novo modelo: `python ia/treinamento.py`
-
-### Problema: WebSocket falha
-**Solução:**
-```bash
-# Verificar se a API está rodando
-ps aux | grep "python api/server.py"
-
-# Reiniciar a API
-python api/server.py
-```
-
-### Problema: Baixa performance
-**Solução:**
-```python
-# Reduzir taxa de atualização em config/settings.py
-EMOTION_REFRESH = 20  # Aumentar de 10 para 20
-
-# Reduzir resolução em core/camera.py
-# Adicionar:
-self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
-```
+1. **Modelo não incluído** - Você deve treinar `ia/treinamento.py` com seu dataset
+2. **Gestos estáticos apenas** - Não detecta movimentos contínuos (dinamismo não implementado)
+3. **Dataset limitado** - Modelo treina apenas com 21 landmarks de uma mão
+4. **Sem contexto linguístico** - Não compreende LIBRAS gramatical
+5. **Detecção de emoção instável** - DeepFace é sensível à iluminação
+6. **Engine C não ativo** - Base fornecida mas não integrada à classificação
+7. **Sem persistência** - Dados de sessão não são salvos
+8. **Sem logging completo** - Apenas prints no console
 
 ---
 
-## 📊 Fluxo de Dados
+## 📝 Próximos Passos
 
-```
-Camera Frame
-    ↓
-┌─────────────────────┐
-│ Hand Detection      │ ← MediaPipe
-│ (Landmarks)         │
-└──────────┬──────────┘
-           ↓
-┌─────────────────────┐
-│ Hybrid Classifier   │ ← C + ML
-│ (Letter Detection)  │
-└──────────┬──────────┘
-           ↓
-┌─────────────────────┐
-│ Word Builder        │ ← Agregação
-│ (Word Formation)    │
-└──────────┬──────────┘
-           ↓
-┌─────────────────────┐
-│ Phrase Builder      │ ← Agrupamento
-│ (Sentence Formation)│
-└──────────┬──────────┘
-           ↓
-┌─────────────────────┐
-│ Text-to-Speech      │ ← pyttsx3
-│ (Voice Synthesis)   │
-└──────────┬──────────┘
-           ↓
-    Audio Output
-    UI Display
-```
-
----
-
-## 🧠 Modelos de IA
-
-### Treinamento de Novo Modelo
-
-```bash
-# 1. Coletar dataset
-python ia/coletor_dataset.py
-
-# 2. Treinar modelo
-python ia/treinamento.py
-
-# 3. Converter para formato otimizado
-python ia/inferencia.py --export
-```
+- [ ] Treinar modelo com dataset público de LIBRAS
+- [ ] Integrar engine C nativo para otimização
+- [ ] Implementar detecção de sinais dinâmicos (com movimento)
+- [ ] Adicionar dicionário de contexto linguístico
+- [ ] Suporte a múltiplas mãos
+- [ ] Logging estruturado com arquivo
+- [ ] Testes unitários e integração
+- [ ] Docker para deployment
+- [ ] Documentação de API (OpenAPI/Swagger)
 
 ---
 
 ## 🤝 Contribuindo
 
-Contribuições são bem-vindas! Por favor:
+Contribuições são bem-vindas! Para contribuir:
 
-1. **Fork** o repositório
-2. **Crie uma branch** para sua feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** para a branch (`git push origin feature/AmazingFeature`)
-5. **Abra um Pull Request**
-
-### Guidelines
-- Mantenha o código limpo e documentado
-- Escreva testes para novas funcionalidades
-- Siga o estilo de código do projeto
-- Atualize a documentação conforme necessário
+1. Faça fork do projeto
+2. Crie uma branch com sua feature (`git checkout -b feature/AmazingFeature`)
+3. Commit suas mudanças (`git commit -m 'Add AmazingFeature'`)
+4. Push para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um Pull Request
 
 ---
 
-## 📝 Licença
+## 📄 Licença
 
-Este projeto está licenciado sob a MIT License - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
----
-
-## 👥 Autor
-
-Desenvolvido por **Matheus** como parte do projeto TechMan.
+MIT License - veja LICENSE file para detalhes
 
 ---
 
-## 📞 Suporte
+## 📧 Contato
 
-Para dúvidas e suporte:
-- 📧 Email: matheusalmeidacarlos@gmail.com
-
-
----
-
-## 🎓 Referências e Tecnologias
-
-### Bibliotecas Utilizadas
-- **OpenCV** - Processamento de vídeo
-- **MediaPipe** - Detecção de mão
-- **TensorFlow/Keras** - Deep Learning
-- **DeepFace** - Reconhecimento de emoção
-- **FastAPI** - API REST
-- **Streamlit** - Interface Web
-- **pyttsx3** - Síntese de voz
-- **scikit-learn** - Machine Learning
-
-### Documentação Oficial
-- [MediaPipe Hand Detection](https://mediapipe.dev)
-- [TensorFlow Documentation](https://www.tensorflow.org)
-- [FastAPI](https://fastapi.tiangolo.com)
-- [Streamlit](https://streamlit.io)
+Para dúvidas ou sugestões, abra uma issue no repositório chame no e-mail:
+matheusalmeidacarlos@gmail.com
 
 ---
 
-## 📈 Roadmap
-
-- [ ] Suporte a ambas as mãos simultaneamente
-- [ ] Reconhecimento de expressões faciais mais detalhadas
-- [ ] Exportação de histórico de tradução
-- [ ] Integração com banco de dados
-- [ ] Mobile App (Flutter/React Native)
-- [ ] Melhorias no reconhecimento de sinais complexos
-- [ ] Suporte a outros idiomas de sinais
-- [ ] Otimização de performance com ONNX
-- [ ] Deploy em produção (Docker, Kubernetes)
-
----
-
-## 🙏 Agradecimentos
-
-Obrigado a todos os contribuidores e à comunidade de LIBRAS por inspirar este projeto.
-
----
-
-**Libras-TechMan** © 2026 | Traduzindo gestos em palavras, conectando pessoas. ♿✋💬
+**Última atualização:** 2026-07-03  
+**Versão:** 0.1.0 (MVP)
