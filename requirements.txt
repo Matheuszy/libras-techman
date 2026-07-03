@@ -1,0 +1,13 @@
+opencv-python==4.10.0.84
+mediapipe==0.10.14
+deepface==0.0.93
+tensorflow==2.16.2
+tf-keras==2.16.0
+numpy==1.26.4
+pandas
+scikit-learn
+joblib
+pyttsx3
+Pillow
+rich
+pytest
